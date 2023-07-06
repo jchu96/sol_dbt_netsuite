@@ -99,6 +99,9 @@ transaction_details as (
     accounting_periods.name as accounting_period_name,
     accounting_periods.is_adjustment as is_accounting_period_adjustment,
     accounting_periods.is_closed as is_accounting_period_closed,
+	-- soligent edits
+	accounting_periods.accounting_period_id as accounting_period_id,
+	--end soligent edit
     accounts.name as account_name,
     accounts.type_name as account_type_name,
     accounts.account_id as account_id,
