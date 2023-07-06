@@ -125,9 +125,15 @@ transaction_details as (
     items.name as item_name,
     items.type_name as item_type_name,
     items.sales_description,
+	--edits from soligent
+	items.custitem_sol_item_classification,
+	-- end edits
     locations.name as location_name,
     locations.city as location_city,
     locations.country as location_country,
+	-- edits from Soligent
+	locations.location_id,
+	-- end edits
     {% if var('netsuite2__using_vendor_categories', true) %}
     vendor_categories.name as vendor_category_name,
     {% endif %}
