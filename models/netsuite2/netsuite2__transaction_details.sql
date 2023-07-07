@@ -77,13 +77,21 @@ entities as (
     from {{ var('netsuite2_entities') }}
 ),
 
+-- Soligent edit
+transaction_status as (
+SELECT id,
+       name,
+       trantype
+FROM netsuite2.transactionstatus where _fivetran_deleted = 0),
+--end soligent edit
+
 transaction_details as (
   select
     transaction_lines.transaction_line_id,
     transaction_lines.memo as transaction_memo,
     not transaction_lines.is_posting as is_transaction_non_posting,
     transactions.transaction_id,
-    transactions.status as transaction_status,
+    transaction_status.name as transaction_status,
     transactions.transaction_date,
     transactions.due_date_at as transaction_due_date,
     transactions.transaction_type as transaction_type,
@@ -207,7 +215,11 @@ transaction_details as (
 
   join subsidiaries 
     on subsidiaries.subsidiary_id = transaction_lines.subsidiary_id
-    
+	
+--soligent edit
+	left join transaction_status
+	on transaction_status.id = transactions.status and transaction_status.trantype = transactions.transaction_type
+--end soligent edit    
   where (accounting_periods.fiscal_calendar_id is null
     or accounting_periods.fiscal_calendar_id  = (select fiscal_calendar_id from subsidiaries where parent_id is null))
 )
