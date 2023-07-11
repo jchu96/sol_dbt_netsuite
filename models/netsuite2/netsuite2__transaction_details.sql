@@ -89,6 +89,15 @@ SELECT key,
        name
 FROM netsuite2.entitystatus where _fivetran_deleted = 0),
 
+created_from_query as (select transaction, createdfrom
+netsuite2.transactionline
+where _fivetran_deleted = 0  and id = 0
+group by transaction),
+
+cost_estimate_query as (select id, costestimate from
+netsuite2.item
+where _fivetran_deleted = 0)
+
 --end soligent edit
 
 transaction_details as (
@@ -153,6 +162,8 @@ transaction_details as (
 	locations.location_id,
 	locations.location_description,
 	entity_status.name as quote_status,
+	created_from_query.createdfrom,
+	coalesce(cost_estimate_query.costestimate, 0) as item_costestimate,
 	-- end edits
     {% if var('netsuite2__using_vendor_categories', true) %}
     vendor_categories.name as vendor_category_name,
@@ -230,6 +241,12 @@ transaction_details as (
 	
 	left join entity_status
 	on entity_status.key = transactions.trans_quote_status
+	
+	left join created_from_query 
+	on created_from_query.transaction = transactions.transaction_id
+	
+	left join cost_estimate_query
+	on cost_estimate_query.id = transaction_lines.item_id
 	
 --end soligent edit    
   where (accounting_periods.fiscal_calendar_id is null
