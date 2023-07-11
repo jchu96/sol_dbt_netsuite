@@ -142,7 +142,7 @@ transaction_details as (
     classes.full_name as class_full_name,
     items.name as item_name,
     items.type_name as item_type_name,
-    items.sales_description,
+    -- items.sales_description, --Soligent edit, removing this line 
 	--edits from soligent
 	items.item_id,
 	items.custitem_sol_item_classification,
