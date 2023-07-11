@@ -96,7 +96,7 @@ group by transaction),
 
 cost_estimate_query as (select id, costestimate from
 netsuite2.item
-where _fivetran_deleted = 0)
+where _fivetran_deleted = 0),
 
 --end soligent edit
 
