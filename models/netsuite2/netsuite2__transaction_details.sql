@@ -89,7 +89,7 @@ SELECT key,
        name
 FROM netsuite2.entitystatus where _fivetran_deleted = 0),
 
-created_from_query as (select transaction, createdfrom
+created_from_query as (select transaction, createdfrom from
 netsuite2.transactionline
 where _fivetran_deleted = 0  and id = 0
 group by transaction),
