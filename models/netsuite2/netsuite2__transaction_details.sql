@@ -86,8 +86,7 @@ FROM netsuite2.transactionstatus where _fivetran_deleted = 0),
 
 entity_status as (
 SELECT key,
-       name,
-       trantype
+       name
 FROM netsuite2.entitystatus where _fivetran_deleted = 0),
 
 --end soligent edit
