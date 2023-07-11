@@ -83,6 +83,13 @@ SELECT id,
        name,
        trantype
 FROM netsuite2.transactionstatus where _fivetran_deleted = 0),
+
+entity_status as (
+SELECT key,
+       name,
+       trantype
+FROM netsuite2.entitystatus where _fivetran_deleted = 0),
+
 --end soligent edit
 
 transaction_details as (
@@ -139,7 +146,7 @@ transaction_details as (
 	--edits from soligent
 	items.item_id,
 	items.custitem_sol_item_classification,
-	items.items.costestimate,
+	items.costestimate,
 	-- end edits
     locations.name as location_name,
     locations.city as location_city,
@@ -147,6 +154,7 @@ transaction_details as (
 	-- edits from Soligent
 	locations.location_id,
 	locations.location_description,
+	entity_status.name as quote_status,
 	-- end edits
     {% if var('netsuite2__using_vendor_categories', true) %}
     vendor_categories.name as vendor_category_name,
@@ -221,6 +229,10 @@ transaction_details as (
 --soligent edit
 	left join transaction_status
 	on transaction_status.id = transactions.status and transaction_status.trantype = transactions.transaction_type
+	
+	left join entity_status
+	on entity_status.key = transactions.trans_quote_status
+	
 --end soligent edit    
   where (accounting_periods.fiscal_calendar_id is null
     or accounting_periods.fiscal_calendar_id  = (select fiscal_calendar_id from subsidiaries where parent_id is null))
