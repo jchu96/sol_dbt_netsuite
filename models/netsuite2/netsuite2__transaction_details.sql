@@ -146,7 +146,7 @@ transaction_details as (
 	--edits from soligent
 	items.item_id,
 	items.custitem_sol_item_classification,
-	items.costestimate,
+	items.spa_costestimate as item_spa_cost_estimate,
 	-- end edits
     locations.name as location_name,
     locations.city as location_city,
