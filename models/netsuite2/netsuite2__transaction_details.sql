@@ -153,7 +153,7 @@ transaction_details as (
     -- items.sales_description, --Soligent edit, removing this line 
 	--edits from soligent
 	items.item_id,
-	items.custitem_sol_item_classification,
+	items.item_classification_legacy,
 	-- end edits
     locations.name as location_name,
     locations.city as location_city,
