@@ -240,7 +240,7 @@ transaction_details as (
 	on transaction_status.id = transactions.status and transaction_status.trantype = transactions.transaction_type
 	
 	left join entity_status
-	on entity_status.key = transactions.trans_quote_status
+	on entity_status.key = transactions.trans_quote_status_id
 	
 	left join created_from_query 
 	on created_from_query.transaction = transactions.transaction_id
