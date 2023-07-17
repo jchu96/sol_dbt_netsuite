@@ -161,7 +161,7 @@ transaction_details as (
 	-- edits from Soligent
 	locations.location_id,
 	locations.location_description,
-	entity_status.name as quote_status,
+	entity_status.name as trans_quote_status,
 	created_from_query.createdfrom,
 	coalesce(cost_estimate_query.costestimate, 0) as item_costestimate,
 	-- end edits
