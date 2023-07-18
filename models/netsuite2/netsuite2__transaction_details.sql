@@ -103,7 +103,7 @@ where _fivetran_deleted = 0),
 transaction_details as (
   select
     transaction_lines.transaction_line_id,
-    transaction_lines.memo as transaction_memo,
+    --transaction_lines.memo as transaction_memo,
     not transaction_lines.is_posting as is_transaction_non_posting,
     transactions.transaction_id,
     transaction_status.name as transaction_status,
