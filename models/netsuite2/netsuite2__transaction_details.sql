@@ -187,7 +187,7 @@ transaction_details as (
       else transaction_lines.amount
         end as transaction_amount,
 	transactions.entity_id as transaction_entity_id,
-	departments.id as department_id
+	departments.department_id
   from transaction_lines
 
   join transactions
