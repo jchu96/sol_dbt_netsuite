@@ -186,7 +186,8 @@ transaction_details as (
       when lower(accounts.type_name) = 'income' or lower(accounts.type_name) = 'other income' then -transaction_lines.amount
       else transaction_lines.amount
         end as transaction_amount,
-	transactions.entity_id as transaction_entity_id
+	transactions.entity_id as transaction_entity_id,
+	departments.id as department_id
   from transaction_lines
 
   join transactions
