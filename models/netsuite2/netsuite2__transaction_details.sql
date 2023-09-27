@@ -98,6 +98,10 @@ cost_estimate_query as (select id, costestimate from
 netsuite2.item
 where _fivetran_deleted = 0),
 
+top_level_query as (select c.id as base_customer_id,
+case when c.parent is null then c.altname else tc.altname end as customer_top_level_name from netsuite2.customer as c left join
+netsuite2.customer tc on tc.id = c.parent where c._fivetran_deleted = 0),
+
 --end soligent edit
 
 transaction_details as (
@@ -164,6 +168,7 @@ transaction_details as (
 	entity_status.name as quote_status,
 	created_from_query.createdfrom,
 	coalesce(cost_estimate_query.costestimate, 0) as item_costestimate,
+	top_level_query.customer_top_level_name,
 	-- end edits
     {% if var('netsuite2__using_vendor_categories', true) %}
     vendor_categories.name as vendor_category_name,
@@ -248,6 +253,10 @@ transaction_details as (
 	
 	left join cost_estimate_query
 	on cost_estimate_query.id = transaction_lines.item_id
+	
+	left join top_level_query
+	on top_level_query.base_customer_id = coalesce(transaction_lines.entity_id, transactions.entity_id)
+	
 	
 --end soligent edit    
   where (accounting_periods.fiscal_calendar_id is null
