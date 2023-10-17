@@ -89,11 +89,6 @@ SELECT key,
        name
 FROM netsuite2.entitystatus where _fivetran_deleted = 0),
 
-created_from_query as (select transaction, createdfrom from
-netsuite2.transactionline
-where _fivetran_deleted = 0  and id = 0
-group by transaction, createdfrom),
-
 cost_estimate_query as (select id, costestimate from
 netsuite2.item
 where _fivetran_deleted = 0),
@@ -166,7 +161,6 @@ transaction_details as (
 	locations.location_id,
 	locations.location_description,
 	entity_status.name as quote_status,
-	created_from_query.createdfrom,
 	coalesce(cost_estimate_query.costestimate, 0) as item_costestimate,
 	top_level_query.customer_top_level_name,
 	-- end edits
@@ -247,9 +241,6 @@ transaction_details as (
 	
 	left join entity_status
 	on entity_status.key = transactions.trans_quote_status
-	
-	left join created_from_query 
-	on created_from_query.transaction = transactions.transaction_id
 	
 	left join cost_estimate_query
 	on cost_estimate_query.id = transaction_lines.item_id
