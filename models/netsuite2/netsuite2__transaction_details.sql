@@ -257,7 +257,7 @@ transaction_details as (
 	on top_level_query.base_customer_id = coalesce(transaction_lines.entity_id, transactions.entity_id)
 	
 	left join billing_addresses ON
-	billing_addresses.nkey =  transactions.billingaddress
+	billing_addresses.nkey =  transactions.trans_billingaddress_id
 --end soligent edit    
   where (accounting_periods.fiscal_calendar_id is null
     or accounting_periods.fiscal_calendar_id  = (select fiscal_calendar_id from subsidiaries where parent_id is null))
