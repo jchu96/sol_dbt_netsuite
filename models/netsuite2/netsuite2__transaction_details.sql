@@ -171,6 +171,7 @@ transaction_details as (
 	coalesce(cost_estimate_query.costestimate, 0) as item_costestimate,
 	top_level_query.customer_top_level_name,
 	billing_addresses.state as trans_bill_state,
+	billing_addresses.zip as trans_bill_zip,
 	-- end edits
     {% if var('netsuite2__using_vendor_categories', true) %}
     vendor_categories.name as vendor_category_name,
