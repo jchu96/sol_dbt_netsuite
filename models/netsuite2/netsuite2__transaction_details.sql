@@ -97,6 +97,13 @@ top_level_query as (select c.id as base_customer_id,
 case when c.parent is null then c.altname else tc.altname end as customer_top_level_name from netsuite2.customer as c left join
 netsuite2.customer tc on tc.id = c.parent where c._fivetran_deleted = 0),
 
+billing_addresses as (SELECT nkey,
+       addr1,
+       city,
+       country,
+       state,
+       zip
+FROM netsuite2.transactionbillingaddress where _fivetran_deleted = 0)
 --end soligent edit
 
 transaction_details as (
@@ -163,6 +170,7 @@ transaction_details as (
 	entity_status.name as quote_status,
 	coalesce(cost_estimate_query.costestimate, 0) as item_costestimate,
 	top_level_query.customer_top_level_name,
+	billing_addresses.state as trans_bill_state,
 	-- end edits
     {% if var('netsuite2__using_vendor_categories', true) %}
     vendor_categories.name as vendor_category_name,
@@ -248,7 +256,8 @@ transaction_details as (
 	left join top_level_query
 	on top_level_query.base_customer_id = coalesce(transaction_lines.entity_id, transactions.entity_id)
 	
-	
+	left join billing_addresses ON
+	billing_addresses.nkey =  transactions.billingaddress
 --end soligent edit    
   where (accounting_periods.fiscal_calendar_id is null
     or accounting_periods.fiscal_calendar_id  = (select fiscal_calendar_id from subsidiaries where parent_id is null))
