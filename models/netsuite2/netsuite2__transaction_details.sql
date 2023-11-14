@@ -103,7 +103,7 @@ billing_addresses as (SELECT nkey,
        country,
        state,
        zip
-FROM netsuite2.transactionbillingaddress where _fivetran_deleted = 0)
+FROM netsuite2.transactionbillingaddress where _fivetran_deleted = 0),
 --end soligent edit
 
 transaction_details as (
