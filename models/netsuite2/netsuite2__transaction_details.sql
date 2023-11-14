@@ -104,6 +104,14 @@ billing_addresses as (SELECT nkey,
        state,
        zip
 FROM netsuite2.transactionbillingaddress where _fivetran_deleted = 0),
+
+shipping_addresses as (SELECT nkey,
+       addr1,
+       city,
+       country,
+       state,
+       zip
+FROM netsuite2.transactionshippingaddress where _fivetran_deleted = 0),
 --end soligent edit
 
 transaction_details as (
@@ -172,6 +180,8 @@ transaction_details as (
 	top_level_query.customer_top_level_name,
 	billing_addresses.state as trans_bill_state,
 	billing_addresses.zip as trans_bill_zip,
+	shipping_addresses.state as trans_ship_state,
+	shipping_addresses.zip as trans_ship_zip,
 	-- end edits
     {% if var('netsuite2__using_vendor_categories', true) %}
     vendor_categories.name as vendor_category_name,
@@ -259,6 +269,10 @@ transaction_details as (
 	
 	left join billing_addresses ON
 	billing_addresses.nkey =  transactions.trans_billingaddress_id
+	
+	left join shipping_addresses ON
+	shipping_addresses.nkey =  transactions.trans_shippingaddress_id
+	
 --end soligent edit    
   where (accounting_periods.fiscal_calendar_id is null
     or accounting_periods.fiscal_calendar_id  = (select fiscal_calendar_id from subsidiaries where parent_id is null))
