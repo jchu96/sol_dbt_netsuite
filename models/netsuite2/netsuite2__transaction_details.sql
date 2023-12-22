@@ -93,7 +93,7 @@ cost_estimate_query as (select id, costestimate from
 netsuite2.item
 where _fivetran_deleted = 0),
 
-top_level_query as (select c.id as base_customer_id,
+top_level_query as (select c.id as base_customer_id, case when c.parent is null then c.id else c.parent end as customer_top_level_id,
 case when c.parent is null then c.altname else tc.altname end as customer_top_level_name from netsuite2.customer as c left join
 netsuite2.customer tc on tc.id = c.parent where c._fivetran_deleted = 0),
 
@@ -177,6 +177,7 @@ transaction_details as (
 	locations.location_description,
 	entity_status.name as quote_status,
 	coalesce(cost_estimate_query.costestimate, 0) as item_costestimate,
+	top_level_query.customer_top_level_id,
 	top_level_query.customer_top_level_name,
 	billing_addresses.state as trans_bill_state,
 	billing_addresses.zip as trans_bill_zip,
